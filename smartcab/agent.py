@@ -19,14 +19,14 @@ class LearningAgent(Agent):
         self.prev_reward = []
         self.prev_action = []
         self.count = 0
-        self.epsilon = 1.02
+        self.epsilon = 1.01
         self.alpha = 0.2
 
     def reset(self, destination=None):
         # final_q_table = pd.DataFrame.from_dict(self.q_table, orient='index')
         # print final_q_table
-        if self.epsilon >= 0.02:
-            self.epsilon = self.epsilon - 0.02
+        if self.epsilon >= 0.01:
+            self.epsilon = self.epsilon - 0.01
         print "epsilon =" + str(self.epsilon)
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
@@ -85,7 +85,7 @@ def run():
     # Now simulate it
     sim = Simulator(e, update_delay=0.5, display=True)  # create simulator (uses pygame when display=True, if available)
 
-    sim.run(n_trials=50)  # run for a specified number of trials
+    sim.run(n_trials=100)  # run for a specified number of trials
 
 
 if __name__ == '__main__':
