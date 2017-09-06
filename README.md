@@ -1,3 +1,7 @@
+## SmartCab
+
+Using Q-Learning algorithm to training a cab agent to follow the traffic rules and to reach the destination in the shortest time possible.
+
 ### Install
 
 This project requires **Python 2.7** with the [pygame](https://www.pygame.org/wiki/GettingStarted
