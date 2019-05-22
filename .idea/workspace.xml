@@ -2,19 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b54d498c-d9d5-436c-bb0e-5b5685d9a045" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/images/car-black.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/car-blue.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/car-cyan.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/car-green.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/car-magenta.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/car-orange.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/car-red.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/car-white.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/car-yellow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/smartcab/agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/smartcab/agent.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/smartcab/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/smartcab/environment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/smartcab/planner.py" beforeDir="false" afterPath="$PROJECT_DIR$/smartcab/planner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/smartcab/simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/smartcab/simulator.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="environment.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="environment.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/smartcab/environment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="666">
-              <caret line="231" column="12" selection-start-line="231" selection-start-column="12" selection-end-line="231" selection-end-column="12" />
+            <state relative-caret-position="379">
+              <caret line="146" column="39" selection-start-line="146" selection-start-column="39" selection-end-line="146" selection-end-column="39" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -40,7 +28,7 @@
       <file leaf-file-name="agent.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/smartcab/agent.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2087">
+            <state relative-caret-position="-1752">
               <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
@@ -61,7 +49,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="planner.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="planner.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/smartcab/planner.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="210">
@@ -80,8 +68,8 @@
       <list>
         <option value="$PROJECT_DIR$/smartcab/planner.py" />
         <option value="$PROJECT_DIR$/smartcab/agent.py" />
-        <option value="$PROJECT_DIR$/smartcab/environment.py" />
         <option value="$PROJECT_DIR$/smartcab/simulator.py" />
+        <option value="$PROJECT_DIR$/smartcab/environment.py" />
       </list>
     </option>
   </component>
@@ -172,15 +160,16 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="75" y="23" width="1680" height="1057" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.1390625" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.53585654" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.5288845" />
       <window_info anchor="bottom" id="Version Control" />
       <window_info anchor="bottom" id="Python Console" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.32968128" />
+      <window_info anchor="bottom" id="Terminal" weight="0.23207171" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" side_tool="true" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -218,26 +207,6 @@
     <entry file="file://$PROJECT_DIR$/smartcab/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/smartcab/environment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="666">
-          <caret line="231" column="12" selection-start-line="231" selection-start-column="12" selection-end-line="231" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/smartcab/agent.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2087">
-          <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/smartcab/simulator.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4277">
@@ -252,6 +221,26 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/smartcab/agent.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1752">
+          <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/smartcab/environment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="379">
+          <caret line="146" column="39" selection-start-line="146" selection-start-column="39" selection-end-line="146" selection-end-column="39" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

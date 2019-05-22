@@ -140,8 +140,10 @@ class Environment:
         state = self.agent_states[agent]
         location = state['location']
         heading = state['heading']
-        light = 'green' if (self.intersections[location].state and heading[1] != 0) or ((not self.intersections[location].state) and heading[0] != 0) else 'red'
-
+        light = 'red'
+        if self.intersections[location].state and heading[1] or\
+                not self.intersections[location].state and heading[0]:
+            light = 'green'
         # Populate oncoming, left, right
         oncoming = None
         left = None
@@ -172,8 +174,11 @@ class Environment:
         state = self.agent_states[agent]
         location = state['location']
         heading = state['heading']
-        light = 'green' if (self.intersections[location].state and heading[1] != 0) or ((not self.intersections[location].state) and heading[0] != 0) else 'red'
         inputs = self.sense(agent)
+        light = 'red'
+        if self.intersections[location].state and heading[1] or\
+                not self.intersections[location].state and heading[0]:
+            light = 'green'
 
         # Move agent if within bounds and obeys traffic rules
         reward = 0  # reward/penalty
@@ -182,7 +187,7 @@ class Environment:
             if light != 'green':
                 move_okay = False
         elif action == 'left':
-            if light == 'green' and (inputs['oncoming'] == None or inputs['oncoming'] == 'left'):
+            if light == 'green' and (inputs['oncoming'] is None or inputs['oncoming'] == 'left'):
                 heading = (heading[1], -heading[0])
             else:
                 move_okay = False
