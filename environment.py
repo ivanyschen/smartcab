@@ -1,4 +1,5 @@
 import random
+import itertools
 from collections import OrderedDict
 
 
@@ -7,11 +8,11 @@ class TrafficLight:
     A traffic light that switches periodically.
     """
 
-    valid_states = [True, False]  # True = NS open, False = EW open
+    VALID_STATES = ['NS', 'EW']
 
     def __init__(self, state=None, period=None):
-        self.state = state if state is not None else random.choice(self.valid_states)
-        self.period = period if period is not None else random.choice([3, 4, 5])
+        self.state = state if state is not None else random.choice(self.VALID_STATES)
+        self.period = period if period is not None else random.choice([2, 3, 4, 5])
         self.last_updated = 0
 
     def reset(self):
@@ -19,7 +20,7 @@ class TrafficLight:
 
     def update(self, t):
         if t - self.last_updated >= self.period:
-            self.state = not self.state  # assuming state is boolean
+            self.state = 'NS' if  self.state == 'EW' else 'EW'
             self.last_updated = t
 
 
@@ -28,13 +29,18 @@ class Environment:
     Environment within which all agents operate.
     """
 
-    valid_actions = [None, 'forward', 'left', 'right']
-    valid_inputs = {'light': TrafficLight.valid_states, 'oncoming': valid_actions, 'left': valid_actions, 'right': valid_actions}
-    valid_headings = [(1, 0), (0, -1), (-1, 0), (0, 1)]  # ENWS
-    hard_time_limit = -100  # even if enforce_deadline is False, end trial when deadline reaches this value (to avoid deadlocks)
+    VALID_ACTIONS = [None, 'forward', 'left', 'right']
+    VALID_INPUTS = {
+        'light': TrafficLight.VALID_STATES,
+        'oncoming': VALID_ACTIONS,
+        'left': VALID_ACTIONS,
+        'right': VALID_ACTIONS}
+    VALID_HEADINGS = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # ENWS
+    # VALID_HEADINGS = ['E', 'N', 'W', 'S']
+    HARD_TIME_LIMIT = -100  #(to avoid deadlock)
 
-    def __init__(self, num_dummies=3):
-        self.num_dummies = num_dummies  # no. of dummy agents
+    def __init__(self, dummy_agent_num=3):
+        self.dummy_agent_num = dummy_agent_num
 
         # Initialize simulation variables
         self.done = False
@@ -43,25 +49,26 @@ class Environment:
         self.status_text = ""
 
         # Road network
-        self.grid_size = (8, 6)  # (cols, rows)
+        self.grid_size = (6, 8)
         self.bounds = (1, 1, self.grid_size[0], self.grid_size[1])
         self.block_size = 100
-        self.intersections = OrderedDict()
         self.roads = []
         self.success_count = 0
-        for x in range(self.bounds[0], self.bounds[2] + 1):
-            for y in range(self.bounds[1], self.bounds[3] + 1):
-                self.intersections[(x, y)] = TrafficLight()  # a traffic light at each intersection
+        self.intersections = OrderedDict()
+        for row in range(self.bounds[0], self.bounds[2] + 1):
+            for col in range(self.bounds[1], self.bounds[3] + 1):
+                self.intersections[(row, col)] = TrafficLight()  # a traffic light at each intersection
 
-        for a in self.intersections:
-            for b in self.intersections:
-                if a == b:
-                    continue
-                if (abs(a[0] - b[0]) + abs(a[1] - b[1])) == 1:  # L1 distance = 1
-                    self.roads.append((a, b))
+        for intersection_a, intersection_b in itertools.product(self.intersections, self.intersections):
+            if intersection_a == intersection_b:
+                continue
+            row_a, col_a = intersection_a
+            row_b, col_b = intersection_b
+            if (abs(row_a - row_b) + abs(col_a - col_b)) == 1:  # L1 distance = 1
+                self.roads.append((intersection_a, intersection_b))
 
         # Dummy agents
-        for i in range(self.num_dummies):
+        for _ in range(self.dummy_agent_num):
             self.create_agent(DummyAgent)
 
         # Primary agent and associated parameters
@@ -70,7 +77,8 @@ class Environment:
 
     def create_agent(self, agent_class, *args, **kwargs):
         agent = agent_class(self, *args, **kwargs)
-        self.agent_states[agent] = {'location': random.choice(list(self.intersections.keys())), 'heading': (0, 1)}
+        self.agent_states[agent] = {'location': random.choice(list(self.intersections.keys())),
+                                    'heading': (-1, 0)}
         return agent
 
     def set_primary_agent(self, agent, enforce_deadline=False):
@@ -86,26 +94,37 @@ class Environment:
             traffic_light.reset()
 
         # Pick a start and a destination
-        start = random.choice(list(self.intersections.keys()))
-        destination = random.choice(list(self.intersections.keys()))
+        smart_agent_start = random.choice(list(self.intersections.keys()))
+        smart_agent_destination = random.choice(list(self.intersections.keys()))
 
         # Ensure starting location and destination are not too close
-        while self.compute_dist(start, destination) < 4:
-            start = random.choice(list(self.intersections.keys()))
-            destination = random.choice(list(self.intersections.keys()))
+        while self.compute_dist(smart_agent_start, smart_agent_destination) < 4:
+            smart_agent_start = random.choice(list(self.intersections.keys()))
+            smart_agent_destination = random.choice(list(self.intersections.keys()))
 
-        start_heading = random.choice(self.valid_headings)
-        deadline = self.compute_dist(start, destination) * 5
-        print("Environment.reset(): Trial set up with start = {}, destination = {}, deadline = {}".format(start, destination, deadline))
+        start_heading = random.choice(self.VALID_HEADINGS)
+        deadline = self.compute_dist(smart_agent_start, smart_agent_destination) * 5
+        print("Environment.reset(): Trial set up with start = {}, destination = {}, deadline = {}".\
+              format(smart_agent_start, smart_agent_destination, deadline))
 
         # Initialize agent(s)
         for agent in self.agent_states.keys():
-            self.agent_states[agent] = {
-                'location': start if agent is self.primary_agent else random.choice(list(self.intersections.keys())),
-                'heading': start_heading if agent is self.primary_agent else random.choice(self.valid_headings),
-                'destination': destination if agent is self.primary_agent else None,
-                'deadline': deadline if agent is self.primary_agent else None}
-            agent.reset(destination=(destination if agent is self.primary_agent else None))
+            if agent is self.primary_agent:
+                self.agent_states[agent] = {
+                    'location': smart_agent_start,
+                    'heading': start_heading,
+                    'destination': smart_agent_destination,
+                    'deadline': deadline
+                }
+                agent.reset(destination=smart_agent_destination)
+            else:
+                self.agent_states[agent] = {
+                    'location': random.choice(list(self.intersections.keys())),
+                    'heading': random.choice(self.VALID_HEADINGS),
+                    'destination': None,
+                    'deadline': None}
+
+                agent.reset()
 
     def step(self):
         #print("Environment.step(): t = {}".format(self.t))  # [debug]
@@ -123,12 +142,13 @@ class Environment:
 
         if self.primary_agent is not None:
             agent_deadline = self.agent_states[self.primary_agent]['deadline']
-            if agent_deadline <= self.hard_time_limit:
+            if agent_deadline <= self.HARD_TIME_LIMIT:
                 self.done = True
-                print("Environment.step(): Primary agent hit hard time limit ({})! Trial aborted.".format(self.hard_time_limit))
+                print("Environment.step(): Primary agent hit hard time limit ({})! Trial aborted.".\
+                      format(self.HARD_TIME_LIMIT))
             elif self.enforce_deadline and agent_deadline <= 0:
                 self.done = True
-                print("Environment.step(): Primary agent ran out of time! Trial aborted.")
+                print("Primary agent ran out of time! Trial aborted.")
                 print("There has been {} successful trials!".format(self.success_count))
             self.agent_states[self.primary_agent]['deadline'] = agent_deadline - 1
 
@@ -141,16 +161,19 @@ class Environment:
         location = state['location']
         heading = state['heading']
         light = 'red'
-        if self.intersections[location].state and heading[1] or\
-                not self.intersections[location].state and heading[0]:
+        if self.intersections[location].state == 'NS' and heading[0] or\
+                self.intersections[location].state == 'EW' and heading[1]:
             light = 'green'
         # Populate oncoming, left, right
         oncoming = None
         left = None
         right = None
         for other_agent, other_state in self.agent_states.items():
-            if agent == other_agent or location != other_state['location'] or (heading[0] == other_state['heading'][0] and heading[1] == other_state['heading'][1]):
+            if agent == other_agent or\
+                    location != other_state['location'] or\
+                    heading == other_state['heading']:
                 continue
+
             other_heading = other_agent.get_next_waypoint()
             if (heading[0] * other_state['heading'][0] + heading[1] * other_state['heading'][1]) == -1:
                 if oncoming != 'left':  # we don't want to override oncoming == 'left'
@@ -165,19 +188,19 @@ class Environment:
         return {'light': light, 'oncoming': oncoming, 'left': left, 'right': right}
 
     def get_deadline(self, agent):
-        return self.agent_states[agent]['deadline'] if agent is self.primary_agent else None
+        return self.agent_states[agent]['deadline']
 
     def act(self, agent, action):
         assert agent in self.agent_states, "Unknown agent!"
-        assert action in self.valid_actions, "Invalid action!"
+        assert action in self.VALID_ACTIONS, "Invalid action!"
 
         state = self.agent_states[agent]
         location = state['location']
         heading = state['heading']
         inputs = self.sense(agent)
         light = 'red'
-        if self.intersections[location].state and heading[1] or\
-                not self.intersections[location].state and heading[0]:
+        if self.intersections[location].state == 'EW' and heading[1] or\
+                not self.intersections[location].state == 'NS' and heading[0]:
             light = 'green'
 
         # Move agent if within bounds and obeys traffic rules
@@ -188,17 +211,16 @@ class Environment:
                 move_okay = False
         elif action == 'left':
             if light == 'green' and (inputs['oncoming'] is None or inputs['oncoming'] == 'left'):
-                heading = (heading[1], -heading[0])
+                heading = (-heading[1], heading[0])
             else:
                 move_okay = False
         elif action == 'right':
             if light == 'green' or inputs['left'] != 'forward':
-                heading = (-heading[1], heading[0])
+                heading = (heading[1], -heading[0])
             else:
                 move_okay = False
 
         if move_okay:
-            # Valid move (could be null)
             if action is not None:
                 # Valid non-null move
                 location = ((location[0] + heading[0] - self.bounds[0]) % (self.bounds[2] - self.bounds[0] + 1) + self.bounds[0],
@@ -263,7 +285,7 @@ class DummyAgent(Agent):
 
     def __init__(self, env):
         super(DummyAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
-        self.next_waypoint = random.choice(Environment.valid_actions[1:])
+        self.next_waypoint = random.choice(Environment.VALID_ACTIONS[1:])
         self.color = random.choice(self.color_choices)
 
     def update(self, t):
@@ -283,7 +305,7 @@ class DummyAgent(Agent):
         action = None
         if action_okay:
             action = self.next_waypoint
-            self.next_waypoint = random.choice(Environment.valid_actions[1:])
+            self.next_waypoint = random.choice(Environment.VALID_ACTIONS[1:])
         reward = self.env.act(self, action)
         # print("DummyAgent.update(): t = {}, inputs = {}, action = {}, reward = {}".format(t, inputs, action, reward))  # [debug]
         # print("DummyAgent.update(): next_waypoint = {}".format(self.next_waypoint))  # [debug]

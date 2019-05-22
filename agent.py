@@ -1,7 +1,7 @@
 import random
-from smartcab.environment import Agent, Environment
-from smartcab.planner import RoutePlanner
-from smartcab.simulator import Simulator
+from environment import Agent, Environment
+from planner import RoutePlanner
+from simulator import Simulator
 import numpy as np
 
 
@@ -21,8 +21,8 @@ class LearningAgent(Agent):
         self.prev_reward = []
         self.prev_action = []
         self.count = 0
-        self.epsilon = 0.9
-        self.alpha = 0.2
+        self.epsilon = 0.99
+        self.alpha = 0.1
 
     def reset(self, destination=None):
         # final_q_table = pd.DataFrame.from_dict(self.q_table, orient='index')
