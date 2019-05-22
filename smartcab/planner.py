@@ -1,7 +1,10 @@
 import random
 
-class RoutePlanner(object):
-    """Silly route planner that is meant for a perpendicular grid network."""
+
+class RoutePlanner:
+    """
+    Silly route planner that is meant for a perpendicular grid network.
+    """
 
     def __init__(self, env, agent):
         self.env = env
@@ -10,7 +13,7 @@ class RoutePlanner(object):
 
     def route_to(self, destination=None):
         self.destination = destination if destination is not None else random.choice(self.env.intersections.keys())
-        print "RoutePlanner.route_to(): destination = {}".format(destination)  # [debug]
+        print("RoutePlanner.route_to(): destination = {}".format(destination))  # [debug]
 
     def next_waypoint(self):
         location = self.env.agent_states[self.agent]['location']

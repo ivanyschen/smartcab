@@ -1,12 +1,14 @@
 import random
-from environment import Agent, Environment
-from planner import RoutePlanner
-from simulator import Simulator
+from smartcab.environment import Agent, Environment
+from smartcab.planner import RoutePlanner
+from smartcab.simulator import Simulator
 import numpy as np
-import pandas as pd
+
 
 class LearningAgent(Agent):
-    """An agent that learns to drive in the smartcab world."""
+    """
+    An agent that learns to drive in the smartcab world.
+    """
 
     def __init__(self, env):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
@@ -19,7 +21,7 @@ class LearningAgent(Agent):
         self.prev_reward = []
         self.prev_action = []
         self.count = 0
-        self.epsilon = 1.01
+        self.epsilon = 0.9
         self.alpha = 0.2
 
     def reset(self, destination=None):
@@ -27,7 +29,7 @@ class LearningAgent(Agent):
         # print final_q_table
         if self.epsilon >= 0.01:
             self.epsilon = self.epsilon - 0.01
-        print "epsilon =" + str(self.epsilon)
+        print('epsilon =' + str(self.epsilon))
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
 
@@ -50,10 +52,10 @@ class LearningAgent(Agent):
         # Select action (exploration vs exploitation)
         expl_vs_expl = np.random.choice(['exploration', 'exploitation'], p=[self.epsilon, 1-self.epsilon])
         if expl_vs_expl == 'exploitation' and self.state in self.q_table:
-            print "Agent is doing exploitation!"
+            print("Agent is doing exploitation!")
             action = action = max(self.q_table[self.state], key=self.q_table[self.state].get)
         else:
-            print "Agent is doing exploration!"
+            print("Agent is doing exploration!")
             action = random.choice([None, 'right', 'left', 'forward'])
         reward = self.env.act(self, action)
         self.prev_action.append(action)
@@ -71,7 +73,7 @@ class LearningAgent(Agent):
                 self.alpha*(self.prev_reward[self.count-1] + self.gamma * self.q_table.get(self.prev_state[self.count], {}).get(self.prev_action[self.count], 0))
         self.count = self.count + 1
 
-        print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
+        print("LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward))  # [debug]
 
 
 def run():

@@ -1,11 +1,11 @@
 import os
 import time
-import random
 import importlib
 
-class Simulator(object):
-    """Simulates agents in a dynamic smartcab environment.
 
+class Simulator:
+    """
+    Simulates agents in a dynamic smartcab environment.
     Uses PyGame to display GUI, if available.
     """
 
@@ -54,15 +54,15 @@ class Simulator(object):
                 self.paused = False
             except ImportError as e:
                 self.display = False
-                print "Simulator.__init__(): Unable to import pygame; display disabled.\n{}: {}".format(e.__class__.__name__, e)
+                print("Simulator.__init__(): Unable to import pygame; display disabled.\n{}: {}".format(e.__class__.__name__, e))
             except Exception as e:
                 self.display = False
-                print "Simulator.__init__(): Error initializing GUI objects; display disabled.\n{}: {}".format(e.__class__.__name__, e)
+                print("Simulator.__init__(): Error initializing GUI objects; display disabled.\n{}: {}".format(e.__class__.__name__, e))
 
     def run(self, n_trials=1):
         self.quit = False
-        for trial in xrange(n_trials):
-            print "Simulator.run(): Trial {}".format(trial)  # [debug]
+        for trial in range(n_trials):
+            print("Simulator.run(): Trial {}".format(trial))  # [debug]
             self.env.reset()
             self.current_time = 0.0
             self.last_updated = 0.0
@@ -114,7 +114,7 @@ class Simulator(object):
         for road in self.env.roads:
             self.pygame.draw.line(self.screen, self.road_color, (road[0][0] * self.env.block_size, road[0][1] * self.env.block_size), (road[1][0] * self.env.block_size, road[1][1] * self.env.block_size), self.road_width)
 
-        for intersection, traffic_light in self.env.intersections.iteritems():
+        for intersection, traffic_light in self.env.intersections.items():
             self.pygame.draw.circle(self.screen, self.road_color, (intersection[0] * self.env.block_size, intersection[1] * self.env.block_size), 10)
             if traffic_light.state:  # North-South is open
                 self.pygame.draw.line(self.screen, self.colors['green'],
@@ -126,7 +126,7 @@ class Simulator(object):
                     (intersection[0] * self.env.block_size + 15, intersection[1] * self.env.block_size), self.road_width)
 
         # * Dynamic elements
-        for agent, state in self.env.agent_states.iteritems():
+        for agent, state in self.env.agent_states.items():
             # Compute precise agent location here (back from the intersection some)
             agent_offset = (2 * state['heading'][0] * self.agent_circle_radius, 2 * state['heading'][1] * self.agent_circle_radius)
             agent_pos = (state['location'][0] * self.env.block_size - agent_offset[0], state['location'][1] * self.env.block_size - agent_offset[1])
@@ -161,7 +161,7 @@ class Simulator(object):
         pause_text = "[PAUSED] Press any key to continue..."
         self.screen.blit(self.font.render(pause_text, True, self.colors['cyan'], self.bg_color), (100, self.height - 40))
         self.pygame.display.flip()
-        print pause_text  # [debug]
+        print(pause_text)  # [debug]
         while self.paused:
             for event in self.pygame.event.get():
                 if event.type == self.pygame.KEYDOWN:
